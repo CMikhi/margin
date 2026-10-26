@@ -577,3 +577,14 @@ body {
 .tiptap-editor pre .hljs-addition {
   background-color: #dfd;
 }
+
+
+/* Keep the icon rail available while its labels are collapsed. */
+.adaptive-sidebar .sidebar-brand > div { flex-shrink: 0; }
+.sidebar-collapsed .sidebar-brand > span,
+.sidebar-collapsed .sidebar-navigation a > span:not(:first-child),
+.sidebar-collapsed .sidebar-navigation a > button,
+.sidebar-collapsed .sidebar-navigation > button > span,
+.sidebar-collapsed .sidebar-footer p {
+  visibility: hidden;
+}

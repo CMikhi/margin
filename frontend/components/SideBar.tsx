@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useState, useCallback, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { loadCustomPages, addCustomPage, deleteCustomPage } from '@/lib/utils/storage'
 import type { CustomPage } from '@/lib/types'
 
@@ -13,7 +13,7 @@ const sidebarVariants = {
     transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] as const },
   },
   closed: {
-    width: 0,
+    width: 64,
     transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] as const },
   },
 }
@@ -24,7 +24,7 @@ const contentVariants = {
     transition: { delay: 0.05, duration: 0.15 },
   },
   closed: {
-    opacity: 0,
+    opacity: 1,
     transition: { duration: 0.1 },
   },
 }
@@ -32,7 +32,7 @@ const contentVariants = {
 export default function SideBar() {
   const pathname = usePathname()
   const router = useRouter()
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(true)
   const [isHovering, setIsHovering] = useState(false)
   const [customPages, setCustomPages] = useState<CustomPage[]>([])
   const [showNewPageInput, setShowNewPageInput] = useState(false)
@@ -101,38 +101,22 @@ export default function SideBar() {
   }, [])
 
   return (
-    <>
-      {/* Collapsed toggle button */}
-      <AnimatePresence>
-        {isCollapsed && (
-          <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
-            onClick={toggleSidebar}
-            className="fixed top-3 left-3 z-50 p-1.5 rounded-md transition-colors"
-            style={{ color: 'var(--text-muted)' }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-hover)'}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-            aria-label="Expand sidebar"
-            suppressHydrationWarning
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24" suppressHydrationWarning>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-            </svg>
-          </motion.button>
-        )}
-      </AnimatePresence>
-
+    <div className="relative h-screen w-16 shrink-0">
       <motion.aside
         initial={false}
-        animate={isCollapsed ? 'closed' : 'open'}
+        animate={isCollapsed && !showNewPageInput ? 'closed' : 'open'}
         variants={sidebarVariants}
-        className="relative h-screen shrink-0 overflow-hidden"
+        className={`adaptive-sidebar absolute left-0 top-0 z-50 h-screen overflow-hidden ${isCollapsed && !showNewPageInput ? 'sidebar-collapsed' : ''}`}
+        aria-label="Workspace navigation"
         style={{ backgroundColor: 'var(--bg-sidebar)' }}
-        onMouseEnter={() => setIsHovering(true)}
-        onMouseLeave={() => setIsHovering(false)}
+        onMouseEnter={() => { setIsHovering(true); setIsCollapsed(false) }}
+        onMouseLeave={() => { setIsHovering(false); setIsCollapsed(true) }}
+        onFocusCapture={(e) => {
+          if (e.target.matches(':focus-visible')) setIsCollapsed(false)
+        }}
+        onBlurCapture={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget) && !isHovering) setIsCollapsed(true)
+        }}
       >
         <motion.div
           variants={contentVariants}
@@ -140,7 +124,8 @@ export default function SideBar() {
         >
           {/* Workspace header */}
           <div className="flex items-center justify-between px-3 py-2.5 group">
-            <Link href="/" className="flex items-center gap-2 px-1.5 py-1 rounded-md hover:bg-(--bg-hover) transition-colors flex-1 min-w-0">
+            <Link href="/" aria-label="Margin home"
+              className="sidebar-brand flex items-center gap-2 px-1.5 py-1 rounded-md hover:bg-(--bg-hover) transition-colors flex-1 min-w-0">
               <div className="w-5 h-5 rounded flex items-center justify-center text-[11px] font-semibold bg-linear-to-br from-(--accent-blue) to-(--accent-purple) text-white shrink-0">
                 M
               </div>
@@ -167,7 +152,7 @@ export default function SideBar() {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-2 py-1 overflow-y-auto">
+          <nav className="sidebar-navigation flex-1 px-2 py-1 overflow-y-auto">
             <ul className="space-y-0.5">
               {navItems.map((item) => {
                 const isActive = pathname === item.href
@@ -175,6 +160,8 @@ export default function SideBar() {
                   <li key={item.href}>
                     <Link
                       href={item.href}
+                      aria-label={item.name}
+                      title={item.name}
                       className="flex items-center gap-2.5 px-2.5 py-1.25 rounded-md text-sm transition-colors duration-120"
                       style={{
                         backgroundColor: isActive ? 'var(--bg-active)' : 'transparent',
@@ -211,6 +198,8 @@ export default function SideBar() {
                   <li key={page.id} className="group/page">
                     <Link
                       href={`/page/${page.id}`}
+                      aria-label={page.name}
+                      title={page.name}
                       className="flex items-center gap-2.5 px-2.5 py-1.25 rounded-md text-sm transition-colors duration-120 relative"
                       style={{
                         backgroundColor: isActive ? 'var(--bg-active)' : 'transparent',
@@ -274,7 +263,9 @@ export default function SideBar() {
               </div>
             ) : (
               <button
-                onClick={() => setShowNewPageInput(true)}
+                aria-label="New page"
+                title="New page"
+                onClick={() => { setIsCollapsed(false); setShowNewPageInput(true) }}
                 className="w-full flex items-center gap-2.5 px-2.5 py-1.25 mx-2 mt-1 rounded-md text-sm transition-colors duration-120"
                 style={{ color: 'var(--text-muted)' }}
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-hover)'}
@@ -289,7 +280,7 @@ export default function SideBar() {
           </nav>
 
           {/* Footer */}
-          <div className="px-3 py-3 border-t" style={{ borderColor: 'var(--border-divider)' }}>
+          <div className="sidebar-footer px-3 py-3 border-t" style={{ borderColor: 'var(--border-divider)' }}>
             <p className="text-[11px] px-1.5" style={{ color: 'var(--text-muted)' }}>
               Margin · Weekly Focus
             </p>
@@ -299,7 +290,7 @@ export default function SideBar() {
         {/* Resize handle visual indicator */}
         <div className="absolute right-0 top-0 bottom-0 w-px" style={{ backgroundColor: 'var(--border-divider)' }} />
       </motion.aside>
-    </>
+    </div>
   )
 }
 
