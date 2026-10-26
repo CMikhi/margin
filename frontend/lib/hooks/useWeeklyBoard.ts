@@ -4,6 +4,7 @@ import { getCurrentWeekStart } from '@/lib/utils/date'
 import { loadBoard, saveBoard } from '@/lib/utils/storage'
 
 export function useWeeklyBoard() {
+  const [isLoaded, setIsLoaded] = useState(false)
   const [board, setBoard] = useState<WeeklyBoard>(() => {
     const currentWeek = getCurrentWeekStart()
     return {
@@ -27,14 +28,14 @@ export function useWeeklyBoard() {
         tasks: []
       }
       setBoard(freshBoard)
-      saveBoard(freshBoard)
     }
+    setIsLoaded(true)
   }, [])
 
   // Save to localStorage whenever board changes
   useEffect(() => {
-    saveBoard(board)
-  }, [board])
+    if (isLoaded) saveBoard(board)
+  }, [board, isLoaded])
 
   const addTask = (title: string) => {
     if (!title.trim()) return

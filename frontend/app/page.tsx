@@ -13,6 +13,7 @@ import { StickyDrawingWidget } from '@/components/StickyDrawingWidget';
 import { FullCanvasWidget } from '@/components/FullCanvasWidget';
 import { EditableSpan } from '@/components/EditableSpan';
 import { useGridLayout } from '@/lib/hooks/useGridLayout';
+import { downloadHomeTemplate } from '@/lib/utils/homeTemplate';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 6 },
@@ -269,6 +270,15 @@ export default function Home() {
   return (
     <PageWithCommandMenu
       pageTitle="🏠 Home"
+      onExportHome={isLoaded ? () => downloadHomeTemplate({
+        version: 1,
+        layout,
+        textWidgets,
+        imageWidgets,
+        canvasWidgets,
+        staticContent,
+        hiddenWidgets: [...hiddenWidgets],
+      }) : undefined}
       onAddTextBox={addTextWidget}
       onAddImage={addImageWidget}
       onAddCalendar={addCalendarWidget}

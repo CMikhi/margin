@@ -241,7 +241,8 @@ export function useGridLayout(pageId?: string) {
   const [staticContent, setStaticContent] = useState<TextWidgetsMap>({})
   const [canvasWidgets, setCanvasWidgets] = useState<CanvasWidgetsMap>({})
   const [hiddenWidgets, setHiddenWidgets] = useState<Set<string>>(() => new Set(getDefaultHiddenWidgets(pageId)))
-  const [isLoaded, setIsLoaded] = useState(false)
+  const [loadedPage, setLoadedPage] = useState<string | null>(null)
+  const isLoaded = loadedPage === (pageId ?? 'home')
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -275,14 +276,10 @@ export function useGridLayout(pageId?: string) {
     } else {
       setImageWidgets(getDefaultImageWidgets(pageId))
     }
-    if (storedStatic) {
-      setStaticContent(storedStatic)
-    }
+    setStaticContent(storedStatic ?? {})
 
     const storedCanvas = loadCanvasWidgets(pageId)
-    if (storedCanvas) {
-      setCanvasWidgets(storedCanvas)
-    }
+    setCanvasWidgets(storedCanvas ?? {})
     
     // Load hidden widgets or use defaults
     const hiddenData = localStorage.getItem(getStorageKey('margin-hidden-widgets', pageId))
@@ -297,7 +294,7 @@ export function useGridLayout(pageId?: string) {
       setHiddenWidgets(new Set(getDefaultHiddenWidgets(pageId)))
     }
     
-    setIsLoaded(true)
+    setLoadedPage(pageId ?? 'home')
   }, [pageId])
 
   // Persist on change

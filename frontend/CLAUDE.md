@@ -23,7 +23,6 @@ Important files and folders
 
 - [frontend/package.json] — scripts and dependencies
 - [frontend/next.config.mjs] — Next.js config
-- [frontend/lib/supabase.ts] — Supabase client (uses env vars NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY)
 - [frontend/lib/hooks/useGridLayout.ts] — Main grid/widget layout hook used across pages
 - [frontend/lib/] — utility functions, types, and smaller hooks
 - [frontend/components/] — UI components, organized by feature
@@ -33,8 +32,6 @@ Environment variables
 
 The app expects the following environment variables (use .env.local for local development):
 
-- NEXT_PUBLIC_SUPABASE_URL — Supabase project URL (public)
-- NEXT_PUBLIC_SUPABASE_ANON_KEY — Supabase anon key (public-facing key)
 
 Security note: Do NOT commit any private keys or secrets. Only public keys prefixed NEXT_PUBLIC_ should be exposed to the browser. Put server-only secrets (if any) in server-side env vars (no NEXT_PUBLIC_ prefix) and never commit .env files.
 
@@ -61,6 +58,5 @@ Notes for contributors
 Where to look for help
 
 - Look at the lib/ folder and the main layout hooks for patterns used across the app.
-- If you need to change supabase usage, update [frontend/lib/supabase.ts] and ensure environment variables are handled correctly.
 
 This file is a living document — please update it when you add new conventions, env vars, or major architectural changes.

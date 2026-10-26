@@ -47,7 +47,17 @@ export function loadCustomPages(): CustomPage[] {
   
   try {
     const stored = localStorage.getItem(CUSTOM_PAGES_KEY)
-    return stored ? JSON.parse(stored) : []
+    if (stored !== null) return JSON.parse(stored)
+
+    // Seed the reference workspace once. An existing empty list stays empty.
+    const createdAt = Date.now()
+    const pages: CustomPage[] = [
+      { id: 'starter-journal', name: 'Journal', icon: '📄', createdAt },
+      { id: 'starter-hklj', name: 'hklj', icon: '📄', createdAt },
+      { id: 'starter-workday', name: 'Workday', icon: '📄', createdAt },
+    ]
+    saveCustomPages(pages)
+    return pages
   } catch (error) {
     console.error('Failed to load custom pages from storage:', error)
     return []
@@ -86,10 +96,9 @@ export function deleteCustomPage(pageId: string): void {
   
   // Also clean up page-specific data
   if (typeof window !== 'undefined') {
-    localStorage.removeItem(`margin-grid-layout-${pageId}`)
-    localStorage.removeItem(`margin-text-widgets-${pageId}`)
-    localStorage.removeItem(`margin-hidden-widgets-${pageId}`)
-    localStorage.removeItem(`margin-static-content-${pageId}`)
+    for (const key of ['margin-grid-layout', 'margin-text-widgets', 'margin-image-widgets', 'margin-canvas-widgets', 'margin-hidden-widgets', 'margin-static-content']) {
+      localStorage.removeItem(`${key}-${pageId}`)
+    }
   }
 }
 

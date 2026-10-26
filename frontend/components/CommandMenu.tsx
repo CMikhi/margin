@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { loadCustomPages } from '@/lib/utils/storage'
 import type { CustomPage } from '@/lib/types'
@@ -22,15 +23,13 @@ const overlayVariants = {
 }
 
 const menuVariants = {
-  hidden: { opacity: 0, scale: 0.98, y: -8 },
+  hidden: { scale: 0.98, y: -8 },
   visible: {
-    opacity: 1,
     scale: 1,
     y: 0,
     transition: { duration: 0.15, ease: [0.16, 1, 0.3, 1] as const },
   },
   exit: {
-    opacity: 0,
     scale: 0.98,
     y: -4,
     transition: { duration: 0.1 },
@@ -45,6 +44,7 @@ interface CommandMenuProps {
   onAddDailyEvents?: () => void
   onAddStickyDrawing?: () => void
   onAddFullCanvas?: () => void
+  onExportHome?: () => void
 }
 
 export function CommandMenu({ 
@@ -55,6 +55,7 @@ export function CommandMenu({
   onAddDailyEvents,
   onAddStickyDrawing,
   onAddFullCanvas,
+  onExportHome,
 }: CommandMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [query, setQuery] = useState('')
@@ -96,6 +97,16 @@ export function CommandMenu({
       action: () => router.push('/calander'),
       keywords: ['calendar', 'date', 'month', 'schedule'],
     },
+    ...(onExportHome
+      ? [{
+          id: 'export-home-template',
+          label: 'Export Home Template',
+          description: 'Download this Home layout with its widget contents',
+          icon: <span aria-hidden="true">↓</span>,
+          action: onExportHome,
+          keywords: ['export', 'home', 'template', 'download', 'default', 'widgets'],
+        }]
+      : []),
     // Add custom pages dynamically
     ...customPages.map((page) => ({
       id: `page-${page.id}`,
@@ -287,26 +298,36 @@ export function CommandMenu({
     }
   }
 
-  return (
+  // Keep the modal outside page stacking contexts and ancestor opacity.
+  if (typeof document === 'undefined') return null
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          variants={overlayVariants}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          className="fixed inset-0 z-100 flex items-start justify-center pt-[20vh]"
-          style={{ backgroundColor: 'rgba(0, 0, 0, 0.15)' }}
+        <div
+          className="fixed inset-0 z-100 isolate flex items-start justify-center px-4 pt-[20vh]"
           onClick={close}
         >
+          <motion.div
+            aria-hidden="true"
+            variants={overlayVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="absolute inset-0 -z-10"
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.15)' }}
+          />
           <motion.div
             variants={menuVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Search commands"
             className="w-full max-w-130 rounded-lg overflow-hidden"
             style={{
-              backgroundColor: 'var(--bg-primary)',
+              backgroundColor: 'var(--bg-primary, #ffffff)',
               boxShadow: 'var(--shadow-overlay)',
             }}
             onClick={(e) => e.stopPropagation()}
@@ -432,8 +453,9 @@ export function CommandMenu({
               </span>
             </div>
           </motion.div>
-        </motion.div>
+        </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }

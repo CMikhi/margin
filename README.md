@@ -15,26 +15,7 @@ npm run dev
 
 The app will be available at **`http://localhost:3000`**
 
-### 3. Backend Setup (Optional)
-
-```bash
-cd backend
-npm install
-cp .env.example .env
-# Edit .env with your JWT secret
-npm run dev
-```
-
-Backend runs at **`http://localhost:8080`**
-
-### 4. Configure Environment (Optional)
-
-For Supabase integration, create `frontend/.env.local`:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
-```
+All data is saved in this browser using localStorage. No backend, database, account, or environment variables are required. Existing local data is retained. Data does not sync between browsers or devices; clearing site data removes it. Images and drawings share the browser’s localStorage quota.
 
 ---
 
@@ -107,6 +88,10 @@ To create custom widgets:
 
 ## 📱 Usage
 
+### First visit
+
+New visitors start with the welcome guide, cat image, Calendar shortcut, and tall bookmark image on Home, plus Journal, hklj, and Workday pages in the sidebar. This workspace is saved locally; later visits keep their edits and deleted pages stay deleted. **Reset Layout** restores the default Home widgets.
+
 ### Basic Workflow
 
 1. **Start with Home Page** - Default dashboard with welcome content
@@ -145,32 +130,11 @@ npm run build    # Production build
 npm run start    # Start production server
 ```
 
-### Backend Development
-
-```bash
-cd backend
-npm run dev      # Development with hot reload
-npm run build    # Build for production
-npm run test     # Run tests
-npm run test:cov # Coverage report
-```
-
-### Project Scripts
-
-| Script | Description |
-|---|---|
-| `npm run dev` | Start development server |
-| `npm run build` | Production build |
-| `npm run lint` | Run ESLint |
-| `npm test` | Run test suite |
-
 ### File Structure Guide
 
 - `frontend/app/` - Next.js pages and layouts
 - `frontend/components/` - Reusable UI components
 - `frontend/lib/hooks/` - Custom React hooks
-- `backend/src/modules/` - NestJS modules
-- `backend/src/common/` - Shared utilities
 
 ---
 
@@ -181,7 +145,7 @@ Contributions are welcome! Please follow these steps:
 1. **Fork** the repository
 2. **Create** a feature branch: `git checkout -b feature/amazing-feature`
 3. **Make** your changes and add tests
-4. **Ensure** all tests pass: `npm test`
+4. **Ensure** the frontend builds: `cd frontend && npm run build`
 5. **Commit** with conventional format: `feat: add amazing feature`
 6. **Push** to your branch: `git push origin feature/amazing-feature`
 7. **Open** a Pull Request

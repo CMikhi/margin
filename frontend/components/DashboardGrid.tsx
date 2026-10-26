@@ -176,7 +176,7 @@ export function DashboardGrid({ widgets, layout, moveWidget, resizeWidget, delet
       {/* Grid container */}
       <div
         ref={gridRef}
-        className="relative h-full p-4"
+        className="relative isolate h-full p-4"
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         style={{
