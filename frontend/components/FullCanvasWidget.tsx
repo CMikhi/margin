@@ -350,7 +350,6 @@ export function FullCanvasWidget({
         })
         canvas.add(shape)
       } else if (tool === 'circle') {
-        const radius = Math.max(w, h) / 2
         const shape = new fabric.Ellipse({
           left,
           top,

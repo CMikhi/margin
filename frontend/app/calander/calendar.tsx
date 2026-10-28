@@ -1,13 +1,12 @@
 'use client';
 
-import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CalendarEvent } from '@/lib/types';
 import { 
   loadEvents, 
   saveEvents, 
   formatDateKey, 
-  parseDate, 
   getDaysBetween, 
   isToday as utilIsToday,
   getEventsForDay as utilGetEventsForDay,

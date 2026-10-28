@@ -411,12 +411,11 @@ export function useGridLayout(pageId?: string) {
     const spot = findEmptySpot(layout, 3, 2)
     const maxZ = Math.max(0, ...Object.values(layout).map(pos => pos.zIndex))
 
-    if (!spot) {
-      // Grid is full, place at 0,0 anyway (will overlap)
-      setLayout((prev) => ({ ...prev, [widgetId]: { col: 0, row: 0, colSpan: 3, rowSpan: 2, zIndex: maxZ + 1 } }))
-    } else {
-      setLayout((prev) => ({ ...prev, [widgetId]: { ...spot, colSpan: 3, rowSpan: 2, zIndex: maxZ + 1 } }))
-    }
+    // When the grid is full, overlap at the origin.
+    setLayout((prev) => ({
+      ...prev,
+      [widgetId]: { ...(spot ?? { col: 0, row: 0 }), colSpan: 3, rowSpan: 2, zIndex: maxZ + 1 },
+    }))
 
     setTextWidgets((prev) => ({ ...prev, [widgetId]: 'Click to edit...' }))
     return widgetId
@@ -436,11 +435,11 @@ export function useGridLayout(pageId?: string) {
     if (!layout[widgetId]) {
       const spot = findEmptySpot(layout, 6, 6)
       const maxZ = Math.max(0, ...Object.values(layout).map(pos => pos.zIndex))
-      if (!spot) {
-        setLayout((prev) => ({ ...prev, [widgetId]: { col: 0, row: 0, colSpan: 6, rowSpan: 6, zIndex: maxZ + 1 } }))
-      } else {
-        setLayout((prev) => ({ ...prev, [widgetId]: { ...spot, colSpan: 6, rowSpan: 6, zIndex: maxZ + 1 } }))
-      }
+      // When the grid is full, overlap at the origin.
+      setLayout((prev) => ({
+        ...prev,
+        [widgetId]: { ...(spot ?? { col: 0, row: 0 }), colSpan: 6, rowSpan: 6, zIndex: maxZ + 1 },
+      }))
     }
     
     return widgetId
@@ -460,11 +459,11 @@ export function useGridLayout(pageId?: string) {
     if (!layout[widgetId]) {
       const spot = findEmptySpot(layout, 3, 4)
       const maxZ = Math.max(0, ...Object.values(layout).map(pos => pos.zIndex))
-      if (!spot) {
-        setLayout((prev) => ({ ...prev, [widgetId]: { col: 0, row: 0, colSpan: 3, rowSpan: 4, zIndex: maxZ + 1 } }))
-      } else {
-        setLayout((prev) => ({ ...prev, [widgetId]: { ...spot, colSpan: 3, rowSpan: 4, zIndex: maxZ + 1 } }))
-      }
+      // When the grid is full, overlap at the origin.
+      setLayout((prev) => ({
+        ...prev,
+        [widgetId]: { ...(spot ?? { col: 0, row: 0 }), colSpan: 3, rowSpan: 4, zIndex: maxZ + 1 },
+      }))
     }
     
     return widgetId
@@ -475,12 +474,11 @@ export function useGridLayout(pageId?: string) {
     const spot = findEmptySpot(layout, 2, 2)
     const maxZ = Math.max(0, ...Object.values(layout).map(pos => pos.zIndex))
 
-    if (!spot) {
-      // Grid is full, place at 0,0 anyway (will overlap)
-      setLayout((prev) => ({ ...prev, [widgetId]: { col: 0, row: 0, colSpan: 2, rowSpan: 2, zIndex: maxZ + 1 } }))
-    } else {
-      setLayout((prev) => ({ ...prev, [widgetId]: { ...spot, colSpan: 2, rowSpan: 2, zIndex: maxZ + 1 } }))
-    }
+    // When the grid is full, overlap at the origin.
+    setLayout((prev) => ({
+      ...prev,
+      [widgetId]: { ...(spot ?? { col: 0, row: 0 }), colSpan: 2, rowSpan: 2, zIndex: maxZ + 1 },
+    }))
 
     setImageWidgets((prev) => ({ ...prev, [widgetId]: '' }))
     return widgetId
@@ -507,11 +505,11 @@ export function useGridLayout(pageId?: string) {
     const spot = findEmptySpot(layout, 2, 2)
     const maxZ = Math.max(0, ...Object.values(layout).map(pos => pos.zIndex))
 
-    if (!spot) {
-      setLayout((prev) => ({ ...prev, [widgetId]: { col: 0, row: 0, colSpan: 2, rowSpan: 2, zIndex: maxZ + 1 } }))
-    } else {
-      setLayout((prev) => ({ ...prev, [widgetId]: { ...spot, colSpan: 2, rowSpan: 2, zIndex: maxZ + 1 } }))
-    }
+    // When the grid is full, overlap at the origin.
+    setLayout((prev) => ({
+      ...prev,
+      [widgetId]: { ...(spot ?? { col: 0, row: 0 }), colSpan: 2, rowSpan: 2, zIndex: maxZ + 1 },
+    }))
     setCanvasWidgets((prev) => ({ ...prev, [widgetId]: '' }))
     return widgetId
   }, [layout])
@@ -521,11 +519,11 @@ export function useGridLayout(pageId?: string) {
     const spot = findEmptySpot(layout, 4, 4)
     const maxZ = Math.max(0, ...Object.values(layout).map(pos => pos.zIndex))
 
-    if (!spot) {
-      setLayout((prev) => ({ ...prev, [widgetId]: { col: 0, row: 0, colSpan: 4, rowSpan: 4, zIndex: maxZ + 1 } }))
-    } else {
-      setLayout((prev) => ({ ...prev, [widgetId]: { ...spot, colSpan: 4, rowSpan: 4, zIndex: maxZ + 1 } }))
-    }
+    // When the grid is full, overlap at the origin.
+    setLayout((prev) => ({
+      ...prev,
+      [widgetId]: { ...(spot ?? { col: 0, row: 0 }), colSpan: 4, rowSpan: 4, zIndex: maxZ + 1 },
+    }))
     setCanvasWidgets((prev) => ({ ...prev, [widgetId]: '' }))
     return widgetId
   }, [layout])

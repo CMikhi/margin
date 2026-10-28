@@ -1,0 +1,23 @@
+{
+  "name": "margin",
+  "version": "1.0.0",
+  "description": "```bash git clone https://github.com/your-username/margin.git cd margin ```",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CMikhi/margin.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/CMikhi/margin/issues"
+  },
+  "homepage": "https://github.com/CMikhi/margin#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^26.6.6"
+  }
+}
